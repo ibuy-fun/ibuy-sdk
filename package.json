@@ -1,0 +1,85 @@
+{
+  "name": "@ibuy-fun/ibuy-sdk",
+  "version": "0.1.0",
+  "description": "iBuy TypeScript SDK for the iBuy Anchor program",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist",
+    "test": "tsx test/demo/index.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "solana",
+    "anchor",
+    "idl",
+    "sdk",
+    "ibuy-style",
+    "ibuy"
+  ],
+  "license": "GPL-3.0",
+  "dependencies": {
+    "tslib": "^2.6.2"
+  },
+  "peerDependencies": {
+    "@coral-xyz/anchor": "^0.31.1",
+    "@solana/spl-token": "^0.4.14",
+    "@solana/web3.js": "^1.98.4",
+    "bn.js": "^5.2.1"
+  },
+  "peerDependenciesMeta": {
+    "@coral-xyz/anchor": {
+      "optional": false
+    },
+    "@solana/spl-token": {
+      "optional": false
+    },
+    "@solana/web3.js": {
+      "optional": false
+    },
+    "bn.js": {
+      "optional": false
+    }
+  },
+  "devDependencies": {
+    "@coral-xyz/anchor": "^0.31.1",
+    "@solana/spl-token": "^0.4.14",
+    "@solana/web3.js": "^1.98.4",
+    "@types/bn.js": "^5.2.0",
+    "bn.js": "^5.2.2",
+    "rimraf": "^6.0.1",
+    "ts-prune": "^0.10.3",
+    "tsx": "^4.16.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.42.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ibuy-fun/ibuy-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ibuy-fun/ibuy-sdk/issues"
+  },
+  "homepage": "https://github.com/ibuy-fun/ibuy-sdk#readme"
+}

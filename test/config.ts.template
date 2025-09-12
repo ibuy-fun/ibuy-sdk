@@ -1,0 +1,73 @@
+import { Connection, Keypair, TransactionMessage, VersionedTransaction } from '@solana/web3.js'
+import { IBuySdk } from '../src/index'
+import { bs58 } from '@coral-xyz/anchor/dist/cjs/utils/bytes'
+import { TransactionInstruction } from '@solana/web3.js'
+import { BlockhashWithExpiryBlockHeight } from '@solana/web3.js'
+import { Commitment } from '@solana/web3.js'
+import { SendOptions } from '@solana/web3.js'
+
+//----------------------------------------------------------------------//
+//update this for testing....
+//choose one
+export const owner: Keypair = Keypair.fromSecretKey(bs58.decode('<YOUR_WALLET_SECRET_KEY>')) //format 5hAFkfRBLbVRBw...
+// export const owner: Keypair = Keypair.fromSecretKey(new Uint8Array(['<YOUR_WALLET_SECRET_KEY'])) //format [253, 178, 7, 37, 240, 149, 156...]
+
+//for token address
+export const mintToken: Keypair = Keypair.fromSecretKey(bs58.decode('<YOUR_MINT_SECRET_KEY>')) //format 5hAFkfRBLbVRBw...
+// export const mintToken: Keypair = Keypair.fromSecretKey(new Uint8Array(['<YOUR_WALLET_SECRET_KEY'])) //format [253, 178, 7, 37, 240, 149, 156...]
+// or you can use keypair generate to create random mint address
+// export const mintToken = Keypair.generate()
+export const connection = new Connection('<YOUR_RPC_URL>', 'confirmed')
+//address for test buy and sell
+export const mintBuySell = '<MINT_ADDRESS_FOR_TESTING>'
+//----------------------------------------------------------------------//
+
+export const ibuy = new IBuySdk(connection)
+export function prepareTransaction({
+  instructions,
+  latestBlockhash,
+  signer,
+}: {
+  instructions: TransactionInstruction[]
+  latestBlockhash: BlockhashWithExpiryBlockHeight
+  signer?: Keypair
+}) {
+  const msg = new TransactionMessage({
+    payerKey: owner.publicKey,
+    recentBlockhash: latestBlockhash.blockhash,
+    instructions,
+  }).compileToV0Message()
+
+  const tx = new VersionedTransaction(msg)
+
+  // Sign now, but don't send yet
+  tx.sign([owner]) // owner is a Keypair
+  if (signer) {
+    tx.sign([signer])
+  }
+  const signature = bs58.encode(tx.signatures[0]) // deterministic, pre-broadcast
+  const serialized = tx.serialize() // bytes you’ll send
+
+  return {
+    tx,
+    signature, // you can show/store this immediately
+    serialized, // raw bytes to broadcast later
+
+    // Execute (send) when you’re ready
+    send: async (opts: SendOptions = { skipPreflight: true }) => {
+      return await connection.sendRawTransaction(serialized, opts) // returns same base58 signature
+    },
+
+    // Confirm using the same latestBlockhash you built with
+    confirm: async (commitment: Commitment = 'confirmed') => {
+      return await connection.confirmTransaction(
+        {
+          signature,
+          blockhash: latestBlockhash.blockhash,
+          lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+        },
+        commitment,
+      )
+    },
+  }
+}
