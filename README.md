@@ -1,3 +1,9 @@
+[![npm][npm-image]][npm-url]
+
+[npm-image]: https://img.shields.io/npm/v/@ibuy-fun/ibuy-sdk.svg?style=flat
+[npm-url]: https://www.npmjs.com/package/@ibuy-fun/ibuy-sdk
+
+
 # iBuy SDK
 
 iBuy SDK–style TypeScript SDK for the ibuy Anchor program
